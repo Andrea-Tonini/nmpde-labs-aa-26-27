@@ -335,6 +335,9 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
+# vscode
+*.vscode
+
 # xwatermark package
 *.xwm
 
