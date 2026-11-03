@@ -76,6 +76,30 @@ protected:
 
   // Forcing term.
   std::function<double(const Point<dim> &)> f;
+
+  // Triangulation.
+  Triangulation<dim> mesh;
+
+  // FEM space.
+  std::unique_ptr<FiniteElement<dim>> fe;
+
+  // Quadrature formula.
+  std::unique_ptr<Quadrature<dim>> quadrature;
+
+  // DoF handler.
+  DoFHandler<dim> dof_handler;
+
+  // Sparsity pattern.
+  SparsityPattern sparsity_pattern;
+
+  // System matrix.
+  SparseMatrix<double> system_matrix;
+
+  // System right-hand side.
+  Vector<double> rhs;
+
+  // System solution.
+  Vector<double> solution;
 };
 
 #endif
