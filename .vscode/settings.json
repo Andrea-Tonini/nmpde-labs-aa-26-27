@@ -1,0 +1,13 @@
+{
+    "C_Cpp.default.compileCommands": [
+        "${workspaceFolder}/lab-01/build_exercise_01/compile_commands.json",
+        "${workspaceFolder}/lab-01/build_exercise_02/compile_commands.json",
+        "${workspaceFolder}/lab-02/build/compile_commands.json",
+        "${workspaceFolder}/lab-03/build/compile_commands.json",
+        "${workspaceFolder}/lab-04/build/compile_commands.json",
+        "${workspaceFolder}/lab-05/build/compile_commands.json",
+        "${workspaceFolder}/lab-06/build/compile_commands.json",
+        "${workspaceFolder}/lab-07/build/compile_commands.json",
+        "${workspaceFolder}/lab-08/build/compile_commands.json"
+    ]
+}

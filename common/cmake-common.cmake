@@ -31,3 +31,4 @@ deal_ii_initialize_cached_variables()
 
 # Add useful compiler flags.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-conversion -Wmissing-braces -Wnon-virtual-dtor")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
