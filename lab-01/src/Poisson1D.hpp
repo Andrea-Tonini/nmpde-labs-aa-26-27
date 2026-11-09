@@ -64,6 +64,11 @@ public:
   void
   output() const;
 
+  // Compute the error against a given exact solution.
+  double
+  compute_error(const VectorTools::NormType &norm_type,
+                const Function<dim>         &exact_solution) const;
+
 protected:
   // Number of elements.
   const unsigned int N_el;
@@ -80,10 +85,21 @@ protected:
   // Triangulation.
   Triangulation<dim> mesh;
 
-  // FEM space.
+  // Finite element space.
+  //
+  // We use a unique_ptr here so that we can choose the type and degree of the
+  // finite elements at runtime (the degree is a constructor parameter).
+  //
+  // The class FiniteElement<dim> is an abstract class from which all types of
+  // finite elements implemented by deal.ii inherit. Using the abstract class
+  // makes it very easy to switch between different types of FE space among the
+  // many that deal.ii provides.
   std::unique_ptr<FiniteElement<dim>> fe;
 
   // Quadrature formula.
+  //
+  // We use a unique_ptr here so that we can choose the type and order of the
+  // quadrature formula at runtime (the order is a constructor parameter).
   std::unique_ptr<Quadrature<dim>> quadrature;
 
   // DoF handler.
@@ -96,7 +112,7 @@ protected:
   SparseMatrix<double> system_matrix;
 
   // System right-hand side.
-  Vector<double> rhs;
+  Vector<double> system_rhs;
 
   // System solution.
   Vector<double> solution;
