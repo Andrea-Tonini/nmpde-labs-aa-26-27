@@ -98,9 +98,6 @@ protected:
   // Quadrature formula.
   std::unique_ptr<Quadrature<dim>> quadrature;
 
-  // Quadrature formula for boundary integrals.
-  std::unique_ptr<Quadrature<dim - 1>> quadrature_boundary;
-
   // DoF handler.
   DoFHandler<dim> dof_handler;
 

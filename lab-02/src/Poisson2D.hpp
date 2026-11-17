@@ -41,7 +41,8 @@ public:
 
   // TODO: implement a class for the Dirichlet boundary condition.
 
-  // TODO: define a constructor that takes the mesh file name, polynomial degree, diffusion coefficient, forcing term, and Neumann boundary condition as parameters.
+  // TODO: define a constructor that takes the mesh file name, polynomial degree,
+  // diffusion coefficient, forcing term, and Neumann boundary condition as parameters.
 
   // Initialization.
   void
