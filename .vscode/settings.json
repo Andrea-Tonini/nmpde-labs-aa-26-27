@@ -8,5 +8,6 @@
         "${workspaceFolder}/lab-06/build/compile_commands.json",
         "${workspaceFolder}/lab-07/build/compile_commands.json",
         "${workspaceFolder}/lab-08/build/compile_commands.json"
-    ]
+    ],
+    "C_Cpp.errorSquiggles": "disabled"
 }
