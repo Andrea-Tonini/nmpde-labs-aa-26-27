@@ -10,7 +10,6 @@
 #include <deal.II/fe/fe_values.h>
 
 #include <deal.II/grid/grid_generator.h>
-// TODO: include grid_in.h
 #include <deal.II/grid/grid_in.h>
 #include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/tria.h>
@@ -25,8 +24,7 @@
 #include <deal.II/numerics/matrix_tools.h>
 #include <deal.II/numerics/vector_tools.h>
 
-// TODO: include filesystem
-#include <filesytem>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -39,38 +37,39 @@ class Poisson2D
 {
 public:
   // Physical dimension (1D, 2D, 3D)
-  // TODO: fix problem dimension.
   static constexpr unsigned int dim = 2;
 
-  // TODO: implement a class for the Dirichlet boundary condition.
+  // Dirichlet boundary function.
+  //
+  // This is implemented as a dealii::Function<dim>, instead of e.g. a lambda
+  // function, because this allows to use dealii boundary utilities directly.
   class FunctionG : public Function<dim>
   {
-    public:
-      // Constructor
-      FunctionG()
-      {}
+  public:
+    // Constructor.
+    FunctionG()
+    {}
 
-      // Evualtion
-      virtual double
-      value(const Point<dim> &p,
-      const unsigned int /*component*/ = 0) const override
-      {
-        return p[0] + p[1]; // x + y
-      }
+    // Evaluation.
+    virtual double
+    value(const Point<dim> &p,
+          const unsigned int /*component*/ = 0) const override
+    {
+      return p[0] + p[1];
+    }
   };
 
-  // TODO: define a constructor that takes the mesh file name, polynomial degree,
-  // diffusion coefficient, forcing term, and Neumann boundary condition as parameters.
-  Poisson2D(const std:string &mesh_file_name_,
-    const unsigned int &r_,
-    const std::function<double(const Point<dim> &)> &mu_,
-    const std::function<double(const Point<dim> &)> &f_,
-    const std::function<double(const Point<dim> &)> &h_)
-  : mesh_file_name(mesh_file_name_)
-  , r(r_)
-  , mu(mu_)
-  , f(f_)
-  , h(h_)
+  // Constructor.
+  Poisson2D(const std::string                               &mesh_file_name_,
+            const unsigned int                              &r_,
+            const std::function<double(const Point<dim> &)> &mu_,
+            const std::function<double(const Point<dim> &)> &f_,
+            const std::function<double(const Point<dim> &)> &h_)
+    : mesh_file_name(mesh_file_name_)
+    , r(r_)
+    , mu(mu_)
+    , f(f_)
+    , h(h_)
   {}
 
   // Initialization.
@@ -102,7 +101,7 @@ protected:
   // Forcing term.
   std::function<double(const Point<dim> &)> f;
 
-  // TODO: add a Neumann boundary condition.
+  // Neumann boundary condition.
   std::function<double(const Point<dim> &)> h;
 
   // Triangulation.
@@ -114,8 +113,8 @@ protected:
   // Quadrature formula.
   std::unique_ptr<Quadrature<dim>> quadrature;
 
-  // TODO: add a quadrature formula for boundary integrals.
-  std::unique_ptr<Quadrature<dim-1>> quadrature_boundary;
+  // Quadrature formula for boundary integrals.
+  std::unique_ptr<Quadrature<dim - 1>> quadrature_boundary;
 
   // DoF handler.
   DoFHandler<dim> dof_handler;

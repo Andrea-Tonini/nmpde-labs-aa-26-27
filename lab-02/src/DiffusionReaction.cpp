@@ -85,9 +85,9 @@ DiffusionReaction::assemble()
   const unsigned int n_q = quadrature->size();
 
   FEValues<dim> fe_values(*fe,
-    *quadrature,
-    update_values | update_gradients |
-    update_quadrature_points | update_JxW_values);
+                          *quadrature,
+                          update_values | update_gradients |
+                            update_quadrature_points | update_JxW_values);
 
   // Local matrix and vector.
   FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
@@ -109,7 +109,7 @@ DiffusionReaction::assemble()
       for (unsigned int q = 0; q < n_q; ++q)
         {
           const double mu_loc    = mu(fe_values.quadrature_point(q));
-          // TODO: evaluate the reaction coefficient.
+          const double sigma_loc = sigma(fe_values.quadrature_point(q));
           const double f_loc     = f(fe_values.quadrature_point(q));
 
           for (unsigned int i = 0; i < dofs_per_cell; ++i)
@@ -120,7 +120,11 @@ DiffusionReaction::assemble()
                                        fe_values.shape_grad(i, q) * //
                                        fe_values.shape_grad(j, q) * //
                                        fe_values.JxW(q);
-                  // TODO: add the reaction contribution.
+
+                  cell_matrix(i, j) += sigma_loc *                   //
+                                       fe_values.shape_value(i, q) * //
+                                       fe_values.shape_value(j, q) * //
+                                       fe_values.JxW(q);
                 }
 
               cell_rhs(i) += f_loc *                       //
@@ -197,14 +201,25 @@ DiffusionReaction::output() const
 
 double
 DiffusionReaction::compute_error(const VectorTools::NormType &norm_type,
-                         const Function<dim> &exact_solution) const
+                                 const Function<dim> &exact_solution) const
 {
   const QGaussSimplex<dim> quadrature_error(r + 2);
 
-  // TODO: define the mapping from the reference to the physical elements (needed for triangular meshes).
+  // For triangular meshes, we need to explicitly provide a Mapping (the mapping
+  // between the reference element and the individual elements in the mesh) to
+  // integrate_difference. These two commands construct the most basic linear
+  // mapping.
+  FE_SimplexP<dim> fe_linear(1);
+  MappingFE        mapping(fe_linear);
 
   Vector<double> error_per_cell(mesh.n_active_cells());
-  // TODO: compute the errors using the mapping defined above
+  VectorTools::integrate_difference(mapping,
+                                    dof_handler,
+                                    solution,
+                                    exact_solution,
+                                    error_per_cell,
+                                    quadrature_error,
+                                    norm_type);
 
   const double error =
     VectorTools::compute_global_error(mesh, error_per_cell, norm_type);

@@ -84,7 +84,8 @@ protected:
   // Diffusion coefficient.
   std::function<double(const Point<dim> &)> mu;
 
-  // TODO: add the reaction coefficient.
+  // Reaction coefficient.
+  std::function<double(const Point<dim> &)> sigma;
 
   // Forcing term.
   std::function<double(const Point<dim> &)> f;
@@ -97,6 +98,9 @@ protected:
 
   // Quadrature formula.
   std::unique_ptr<Quadrature<dim>> quadrature;
+
+  // Quadrature formula for boundary integrals.
+  std::unique_ptr<Quadrature<dim - 1>> quadrature_boundary;
 
   // DoF handler.
   DoFHandler<dim> dof_handler;
