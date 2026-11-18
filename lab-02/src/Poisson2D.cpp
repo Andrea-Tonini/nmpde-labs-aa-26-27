@@ -10,6 +10,11 @@ Poisson2D::setup()
     std::cout << "Initializing the mesh" << std::endl;
 
     // TODO: read the mesh from file.
+    GridIn<dim> grid_in;
+    grid_in.attach_triangulation(mesh);
+
+    std::ifstream mesh_file(mesh_file_name);
+    grid_in.read_mesh(mesh_file);
     std::cout << "  Number of elements = " << mesh.n_active_cells()
               << std::endl;
   }
@@ -28,6 +33,7 @@ Poisson2D::setup()
 
     quadrature          = std::make_unique<QGaussSimplex<dim>>(r + 1);
     // TODO: add a quadrature rule for the boundary.
+    quadrature_boundary = std::make_unique<QGaussSimplex<dim-1>>(r+1);
 
     std::cout << "  Quadrature points per cell = " << quadrature->size()
               << std::endl;
@@ -85,6 +91,9 @@ Poisson2D::assemble()
     update_quadrature_points | update_JxW_values);
 
     // TODO: add a FEValues object for the boundary.
+  FEFaceValues<dim> fe_values_boundary(*fe,
+  quadrature_boundary,
+  update_values | update_quadrature_points | update_JxW_values)
   // Local matrix and vector.
   FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
   Vector<double>     cell_rhs(dofs_per_cell);
@@ -124,6 +133,26 @@ Poisson2D::assemble()
         }
 
       // TODO: handle the Neumann boundary conditions.
+      if(cell->at_boundary())
+      {
+        // Looping through the faces of the cell (on the boundary)
+        for(unsigned int face_number = 0; face_number < cell->n_faces(); ++face_number)
+        {
+          if(cell->face(face_number)->at_boundary() &&
+            (cell->face(face_number)->boundary_id() == 2 ||
+             cell->face(face_number)->boundary_id() == 3))
+          {
+            fe_values_boundary.reinit(cell, face_number);
+            for(unsigned int q = 0; q < quadrature_boundary->size(); ++q)
+            {
+              for(unsigned int i = 0; i < dofs_per_cell; ++i)
+                cell_rhs(i) += h(fe_values_boundary.quadrature_point(q)) *
+                    fe_values_boundary.shape_values(i, q) *
+                    fe_values_boundary.JxW(q);
+            }
+          }
+        }
+      }
       cell->get_dof_indices(dof_indices);
 
       system_matrix.add(dof_indices, cell_matrix);
@@ -134,6 +163,7 @@ Poisson2D::assemble()
   {
     std::map<types::global_dof_index, double> boundary_values;
     // TODO: define a non-zero boundary function for the Dirichlet boundary conditions.
+    FunctionG bc_function;
 
     std::map<types::boundary_id, const Function<dim> *> boundary_functions;
     boundary_functions[0] = &bc_function;
