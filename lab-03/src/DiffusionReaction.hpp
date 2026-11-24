@@ -18,6 +18,7 @@
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 #include <deal.II/lac/precondition.h>
 #include <deal.II/lac/solver_cg.h>
+#include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/sparse_matrix.h>
 #include <deal.II/lac/vector.h>
 
@@ -39,6 +40,7 @@ class DiffusionReaction
 public:
   // Physical dimension (1D, 2D, 3D)
   // TODO: set the space dimension
+  static constexpr unsigned int dim = 3;
 
   // Constructor.
   DiffusionReaction(const std::string  &mesh_file_name_,

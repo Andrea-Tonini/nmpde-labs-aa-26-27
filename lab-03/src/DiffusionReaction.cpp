@@ -149,6 +149,8 @@ DiffusionReaction::assemble()
     boundary_functions[1] = &bc_function;
     boundary_functions[2] = &bc_function;
     boundary_functions[3] = &bc_function;
+    boundary_functions[4] = &bc_function;
+    boundary_functions[5] = &bc_function;
 
     VectorTools::interpolate_boundary_values(dof_handler,
                                              boundary_functions,
@@ -164,15 +166,26 @@ DiffusionReaction::solve()
 {
   std::cout << "===============================================" << std::endl;
 
-  PreconditionIdentity preconditioner;
+  //PreconditionIdentity preconditioner;
 
   // TODO: change preconditioner
+  //PreconditionJacobi preconditioner;
+  //preconditioner.initialize(system_matrix);
+
+  //PreconditionSOR preconditioner;
+  //preconditioner.initialize(system_matrix, 
+  //  PreconditionSOR<SparseMatrix<double>>::AdditionalData(1.0));
+
+  PreconditionSSOR preconditioner;
+  preconditioner.initialize(system_matrix,
+    PreconditionSSOR<SparseMatrix<double>>::AdditionalData(1.0));
 
   ReductionControl solver_control(/* maxiter = */ 1000,
                                   /* tolerance = */ 1.0e-16,
                                   /* reduce = */ 1.0e-6);
 
   SolverCG<Vector<double>> solver(solver_control);
+  //SolverGMRES<Vector<double>> solver(solver_control);
 
   std::cout << "  Solving the linear system" << std::endl;
   solver.solve(system_matrix, solution, system_rhs, preconditioner);
