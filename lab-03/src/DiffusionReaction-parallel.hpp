@@ -20,7 +20,6 @@
 
 #include <deal.II/lac/solver_cg.h>
 #include <deal.II/lac/solver_gmres.h>
-// TODO: include trilinos wrappers
 #include <deal.II/lac/trilinos_precondition.h>
 #include <deal.II/lac/trilinos_sparse_matrix.h>
 #include <deal.II/lac/vector.h>
@@ -105,11 +104,11 @@ protected:
   // Rank of the current MPI process.
   const unsigned int mpi_rank;
 
-  // TODO: Triangulation. The parallel::fullydistributed::Triangulation class manages
+  // Triangulation. The parallel::fullydistributed::Triangulation class manages
   // a mesh that is completely distributed across all MPI processes (i.e. each
   // process only stores its own locally relevant cells).
   parallel::fullydistributed::Triangulation<dim> mesh;
-  
+
   // Finite element space.
   std::unique_ptr<FiniteElement<dim>> fe;
 
@@ -122,19 +121,20 @@ protected:
   // DoF handler.
   DoFHandler<dim> dof_handler;
 
-  // TODO: Use Trilinos wrappers to define the system matrix, the rhs and the solution vectors.
+  // System matrix.
   TrilinosWrappers::SparseMatrix system_matrix;
 
+  // System right-hand side.
   TrilinosWrappers::MPI::Vector system_rhs;
 
+  // System solution.
   TrilinosWrappers::MPI::Vector solution;
 
-  // TODO: Output stream for process 0.
-  ConditionalOStream pcout; 
-  
-  // TODO: Locally owned DoFs for current process.
-  IndexSet locally_owned_dofs;
+  // Output stream for process 0.
+  ConditionalOStream pcout;
 
+  // Locally owned DoFs for current process.
+  IndexSet locally_owned_dofs;
 };
 
 #endif

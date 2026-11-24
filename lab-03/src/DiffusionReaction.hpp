@@ -39,7 +39,6 @@ class DiffusionReaction
 {
 public:
   // Physical dimension (1D, 2D, 3D)
-  // TODO: set the space dimension
   static constexpr unsigned int dim = 3;
 
   // Constructor.
